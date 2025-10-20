@@ -39,7 +39,6 @@ class _SignupViewState extends State<SignupView> {
 
         // ====== When success, close dialog and go to home ======
         if (state is SignUpSuccess || state is GoogleSignInSuccess) {
-          Navigator.pop(context); // close loading dialog
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => MainHomeView()),

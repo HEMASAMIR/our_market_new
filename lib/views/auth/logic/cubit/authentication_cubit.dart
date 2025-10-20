@@ -17,7 +17,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     emit(LoginLoading());
     try {
       await client.auth.signInWithPassword(password: password, email: email);
-      // await getUserData();
+      await getUserData();
       emit(LoginSuccess());
     } on AuthException catch (e) {
       log(e.toString());
@@ -35,10 +35,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     emit(SignUpLoading());
     try {
       await client.auth.signUp(password: password, email: email);
-      // await addUserData(name: name, email: email);
+      await addUserData(name: name, email: email);
       // await getUserData();
       emit(SignUpSuccess());
-    } on AuthException catch (e) {
+    } on AuthException catch (e) { 
       log(e.toString());
       emit(SignUpError(e.message));
     } catch (e) {

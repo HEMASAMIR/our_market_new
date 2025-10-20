@@ -36,9 +36,15 @@ class _LoginViewState extends State<LoginView> {
         }
 
         if (state is LoginError) {
-          Navigator.pop(context); // close loading dialog
-          showMsg(context, state.message);
+          Navigator.pop(context); // close loading dialog if open
+
+          if (state.message.contains('email_not_confirmed')) {
+            showMsg(context, "Please verify your email before logging in.");
+          } else {
+            showMsg(context, state.message);
+          }
         }
+
         if (state is LoginLoading) {
           showDialog(
             context: context,
