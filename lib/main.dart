@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:our_market/core/app_colors.dart';
 import 'package:our_market/core/constant/const.dart';
 import 'package:our_market/core/my_observer.dart';
-import 'package:our_market/views/auth/ui/login_view.dart';
 import 'package:our_market/views/auth/logic/cubit/authentication_cubit.dart';
-import 'package:our_market/views/home/ui/home_view.dart';
+import 'package:our_market/views/auth/ui/login_view.dart';
 import 'package:our_market/views/nav_bar/ui/main_home_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,18 +17,12 @@ void main() async {
   );
   Bloc.observer = MyObserver();
 
-  runApp(
-    BlocProvider(
-      create: (context) => AuthenticationCubit()..getUserData(),
-      child: const OurMarket(),
-    ),
-  );
+  runApp(const OurMarket());
 }
 
 class OurMarket extends StatelessWidget {
   const OurMarket({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     SupabaseClient client = Supabase.instance.client;
@@ -37,8 +30,8 @@ class OurMarket extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthenticationCubit(),
-        )
+          create: (context) => AuthenticationCubit()..getUserData(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -47,10 +40,8 @@ class OurMarket extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.kScaffoldColor,
           useMaterial3: true,
         ),
-        // home: client.auth.currentUser != null
-        //     ? MainHomeView()
-        //     : const LoginView(),
-        home: LoginView(),
+        home: 
+             const LoginView(),
       ),
     );
   }

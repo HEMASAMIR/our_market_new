@@ -18,6 +18,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       await client.auth.signInWithPassword(password: password, email: email);
       await getUserData();
+      await getUserData();
       emit(LoginSuccess());
     } on AuthException catch (e) {
       log(e.toString());
@@ -36,9 +37,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       await client.auth.signUp(password: password, email: email);
       await addUserData(name: name, email: email);
-      // await getUserData();
+      await getUserData();
       emit(SignUpSuccess());
-    } on AuthException catch (e) { 
+    } on AuthException catch (e) {
       log(e.toString());
       emit(SignUpError(e.message));
     } catch (e) {
@@ -126,17 +127,31 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   Future<void> getUserData() async {
     emit(GetUserDataLoading());
     try {
-      final List<Map<String, dynamic>> data = await client
-          .from('users')
-          .select()
-          .eq("user_id", client.auth.currentUser!.id);
+      final user = client.auth.currentUser;
+      if (user == null) {
+        log("❌ No logged-in user found");
+        return;
+      }
+
+      final List<Map<String, dynamic>> data =
+          await client.from('users').select().eq("user_id", user.id);
+
+      if (data.isEmpty) {
+        log("⚠️ No user data found in Supabase table");
+        return;
+      }
+
       userDataModel = UserDataModel(
-          email: data[0]["email"],
-          name: data[0]["name"],
-          userId: data[0]["user_id"]);
+        email: data[0]["email"],
+        name: data[0]["name"],
+        userId: data[0]["user_id"],
+      );
+
+      log("✅ Data fetched: $data");
+
       emit(GetUserDataSuccess());
     } catch (e) {
-      log(e.toString());
+      log("⚠️ Error in getUserData: $e");
       emit(GetUserDataError());
     }
   }
