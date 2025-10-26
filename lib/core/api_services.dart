@@ -4,9 +4,10 @@ import 'package:our_market/core/constant/const.dart';
 class ApiServices {
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://mqvxvoncvtztchpreghg.supabase.co", 
+      baseUrl: SupabaseKeys.supabaseUrl,
       headers: {
         "apiKey": SupabaseKeys.anonKey,
+        "Authorization": "Bearer ${SupabaseKeys.anonKey}",
       },
     ),
   );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:our_market/core/app_colors.dart';
-import 'package:our_market/views/auth/ui/widgets/custom_elevated_btn.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:our_market/core/components/product_card.dart';
+import 'package:our_market/core/cubit/home_cubit.dart';
 
 class ProductsList extends StatelessWidget {
   const ProductsList({
@@ -22,94 +23,28 @@ class ProductsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: shrinkWrap ?? true,
-      physics: physics ?? const NeverScrollableScrollPhysics(),
-      itemCount: 1,
-      itemBuilder: (context, index) {
-        return Card(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
-          margin: const EdgeInsets.all(12),
-          elevation: 4,
-          child: Column(children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(16)),
-              child: Stack(
-                children: [
-                  // صورة المنتج
-                  Image.asset(
-                    'assets/images/buy.jpg',
-                    width: double.infinity,
-                    height: 180,
-                    fit: BoxFit.cover,
-                  ),
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        final cubit = context.read<HomeCubit>();
 
-                  // النص فوق على الشمال بخلفية بيضاء
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          )
-                        ],
-                      ),
-                      child: const Text(
-                        "خصم 20%",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Product Three'),
-                IconButton(onPressed: () {}, icon: Icon(Icons.favorite))
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      '100 LE',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '120LE',
-                      style: TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          color: AppColors.kGreyColor),
-                    ),
-                  ],
-                ),
-                CustomEBtn(
-                  text: 'Buy Now',
-                  onTap: () {},
-                )
-              ],
-            ),
-          ]),
-        );
+        if (state is GetDataLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is GetDataError) {
+          return const Center(child: Text("Error loading products"));
+        } else if (cubit.products.isEmpty) {
+          return const Center(child: Text("No products found"));
+        } else {
+          return ListView.builder(
+            shrinkWrap: shrinkWrap ?? true,
+            physics: physics ?? const NeverScrollableScrollPhysics(),
+            itemCount: cubit.products.length,
+            itemBuilder: (context, index) {
+              return ProductCard(
+                product: cubit.products[index],
+              );
+            },
+          );
+        }
       },
     );
   }

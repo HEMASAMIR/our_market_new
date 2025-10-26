@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:our_market/core/app_colors.dart';
 import 'package:our_market/core/constant/const.dart';
+import 'package:our_market/core/cubit/home_cubit.dart';
 import 'package:our_market/core/my_observer.dart';
 import 'package:our_market/views/auth/logic/cubit/authentication_cubit.dart';
 import 'package:our_market/views/auth/ui/login_view.dart';
@@ -32,6 +33,7 @@ class OurMarket extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthenticationCubit()..getUserData(),
         ),
+        BlocProvider(create: (context) => HomeCubit()..getProducts()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -40,8 +42,9 @@ class OurMarket extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.kScaffoldColor,
           useMaterial3: true,
         ),
-        home: 
-             const LoginView(),
+        home: client.auth.currentUser == null
+            ? const LoginView()
+            : MainHomeView(),
       ),
     );
   }

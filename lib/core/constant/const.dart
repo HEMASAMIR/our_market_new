@@ -1,5 +1,3 @@
-// lib/core/constants/supabase_keys.dart
-
 class SupabaseKeys {
   static const String supabaseUrl = 'https://mqvxvoncvtztchpreghg.supabase.co';
   static const String anonKey =

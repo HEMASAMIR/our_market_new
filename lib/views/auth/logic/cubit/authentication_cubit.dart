@@ -13,11 +13,19 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
   SupabaseClient client = Supabase.instance.client;
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login(
+      {required String email,
+      required String password,
+      required String name}) async {
     emit(LoginLoading());
     try {
       await client.auth.signInWithPassword(password: password, email: email);
-      await getUserData();
+      // انتظر 0.5 ثانية عشان Supabase يحدّث حالة المستخدم
+      await Future.delayed(const Duration(milliseconds: 500));
+      await addUserData(
+        email: email,
+        name: name,
+      );
       await getUserData();
       emit(LoginSuccess());
     } on AuthException catch (e) {
@@ -36,6 +44,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     emit(SignUpLoading());
     try {
       await client.auth.signUp(password: password, email: email);
+      // انتظر 0.5 ثانية عشان Supabase يحدّث حالة المستخدم
+      await Future.delayed(const Duration(milliseconds: 500));
+      log('Current user: ${client.auth.currentUser}');
+
       await addUserData(name: name, email: email);
       await getUserData();
       emit(SignUpSuccess());

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:our_market/core/components/custom_circle_pro_ind.dart';
@@ -16,11 +18,17 @@ class CaheImage extends StatelessWidget {
       height: 250,
       width: double.infinity,
       imageUrl: url,
-      placeholder: (context, url) => const SizedBox(
-        height: 200,
-        child: CustomCircleProgIndicator(),
-      ),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
+      placeholder: (context, url) {
+        log('Image Success... :${url.toString()}');
+        return const SizedBox(
+          height: 200,
+          child: CustomCircleProgIndicator(),
+        );
+      },
+      errorWidget: (context, url, error) {
+        log('Image error: $error');
+        return const Icon(Icons.error);
+      },
     );
   }
 }

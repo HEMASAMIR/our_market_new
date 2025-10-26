@@ -1,12 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:our_market/core/app_colors.dart';
 import 'package:our_market/core/components/cache_image.dart';
-import 'package:our_market/core/functions/navigate_to.dart';
 import 'package:our_market/core/models/product_model/product_model.dart';
-import 'package:our_market/views/product_details/ui/product_details_view.dart';
-import 'package:pay_with_paymob/pay_with_paymob.dart';
 
 import '../../views/auth/ui/widgets/custom_elevated_btn.dart';
 
@@ -15,20 +10,14 @@ class ProductCard extends StatelessWidget {
     required this.product,
     super.key,
     this.onTap,
-    required this.isFavorite,required this.onPaymentSuccess,
   });
   final ProductModel product;
   final Function()? onTap;
-  final VoidCallback onPaymentSuccess;
-  final bool isFavorite;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => navigateTo(
-          context,
-          ProductDetailsView(
-            product: product,
-          )),
+      onTap: () {},
       child: Card(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -44,9 +33,8 @@ class ProductCard extends StatelessWidget {
                       bottomLeft: Radius.circular(16),
                     ),
                     child: CaheImage(
-                      url: product.imageUrl ??
-                          "https://img.freepik.com/premium-psd/kitchen-product-podium-display-background_1101917-13418.jpg?w=900",
-                    ),
+                        url: product.imageUrl ??
+                            "https://picsum.photos/400/200"),
                   ),
                   Positioned(
                     child: Container(
@@ -88,12 +76,8 @@ class ProductCard extends StatelessWidget {
                           ),
                           IconButton(
                               onPressed: onTap,
-                              icon: Icon(
-                                Icons.favorite,
-                                color: isFavorite
-                                    ? AppColors.kPrimaryColor
-                                    : AppColors.kGreyColor,
-                              ))
+                              icon: Icon(Icons.favorite,
+                                  color: AppColors.kPrimaryColor))
                         ]),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,22 +103,7 @@ class ProductCard extends StatelessWidget {
                         ),
                         CustomEBtn(
                           text: "Buy Now",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PaymentView(
-                                  onPaymentSuccess:onPaymentSuccess,
-                                  onPaymentError: () {
-                                     log("Payment Failure");
-
-                                  },
-                                  price:
-                                      double.parse(product.price!), // Required: Total price (e.g., 100 for 100 EGP)
-                                ),
-                              ),
-                            );
-                          },
+                          onTap: () {},
                         ),
                       ],
                     )

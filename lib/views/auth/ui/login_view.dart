@@ -22,6 +22,8 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isPasswordHidden = true;
   @override
@@ -139,6 +141,7 @@ class _LoginViewState extends State<LoginView> {
                                       cubit.login(
                                         email: emailController.text,
                                         password: passwordController.text,
+                                        name: nameController.text,
                                       );
                                     }
                                   },
