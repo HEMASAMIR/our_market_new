@@ -76,7 +76,7 @@ class ProductCard extends StatelessWidget {
                           ),
                           IconButton(
                               onPressed: onTap,
-                              icon: Icon(Icons.favorite,
+                              icon: const Icon(Icons.favorite,
                                   color: AppColors.kPrimaryColor))
                         ]),
                     Row(

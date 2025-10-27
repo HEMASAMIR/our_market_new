@@ -9,7 +9,7 @@ import 'package:our_market/views/profile/ui/profile_view.dart';
 import 'package:our_market/views/store/ui/store_view.dart';
 
 class MainHomeView extends StatefulWidget {
-  MainHomeView({super.key});
+  const MainHomeView({super.key});
 
   @override
   State<MainHomeView> createState() => _MainHomeViewState();

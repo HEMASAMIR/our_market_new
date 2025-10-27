@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:our_market/core/models/product_model/product_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
