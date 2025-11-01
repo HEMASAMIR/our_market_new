@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -29,6 +31,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           ProductDetailsCubit()..getRates(productId: widget.product.productId!),
       child: BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
         listener: (context, state) async {
+          // FOR UPDATE DATE IN SAME PAGE
           if (state is AddOrUpdateRateSuccess) {
             navigateWithoutBack(context, widget);
           }
@@ -101,8 +104,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   productId: widget.product.productId!,
                                   data: {
                                     "rate": rating.toInt(),
-                                    "for_user": cubit.userId,
-                                    "for_product": widget.product.productId,
+                                    "for_user": cubit.userId, // exist in cubit
+                                    "for_product": widget
+                                        .product.productId // product in Model
                                   },
                                 );
                               },
@@ -115,21 +119,42 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               labelText: "Type your feedback",
                               suffIcon: IconButton(
                                 onPressed: () async {
-                                  await context
-                                      .read<AuthenticationCubit>()
-                                      .getUserData();
-                                  await cubit.addComment(
+                                  final authCubit =
+                                      context.read<AuthenticationCubit>();
+                                  final commentCubit =
+                                      context.read<ProductDetailsCubit>();
+
+                                  // 🟢 اطبع قبل التحميل عشان نتابع
+                                  log("🕓 Fetching user data...");
+
+                                  await authCubit.getUserData();
+                                  // استنى فعلاً لحد ما البيانات تيجي
+
+                                  // 🟢 اتأكد ان فيه بيانات
+                                  if (authCubit.userDataModel == null) {
+                                    log("❌ userDataModel is NULL after getUserData");
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("User data not loaded")),
+                                    );
+                                    return;
+                                  }
+
+                                  log("👤 userData before comment: ${authCubit.userDataModel!.name.toString()}"); // لو عندك toJson()
+                                  // log("👤 user name before comment: ${userData?.name}");
+
+                                  await commentCubit.addComment(
                                     data: {
-                                      "comment": _commentController.text,
-                                      "for_user": cubit.userId,
+                                      "comment": _commentController.text.trim(),
+                                      "for_user":
+                                          authCubit.userDataModel!.userId,
                                       "for_product": widget.product.productId,
-                                      "user_name": context
-                                              .read<AuthenticationCubit>()
-                                              .userDataModel
-                                              ?.name ??
-                                          "User is Null"
+                                      "user_name":
+                                          authCubit.userDataModel!.name,
                                     },
                                   );
+
                                   _commentController.clear();
                                 },
                                 icon: const Icon(Icons.send),

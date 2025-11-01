@@ -36,16 +36,15 @@ class OurMarket extends StatelessWidget {
         BlocProvider(create: (context) => HomeCubit()..getProducts()),
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Our Market',
-        theme: ThemeData(
-          scaffoldBackgroundColor: AppColors.kScaffoldColor,
-          useMaterial3: true,
-        ),
-        home: client.auth.currentUser == null
-            ? const LoginView()
-            : MainHomeView(),
-      ),
+          debugShowCheckedModeBanner: false,
+          title: 'Our Market',
+          theme: ThemeData(
+            scaffoldBackgroundColor: AppColors.kScaffoldColor,
+            useMaterial3: true,
+          ),
+          home: const LoginView()
+          // : MainHomeView(),
+          ),
     );
   }
 }

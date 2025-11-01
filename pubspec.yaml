@@ -41,6 +41,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   supabase_flutter: ^2.8.0
   google_sign_in: ^6.2.1
+  skeletonizer: 1.4.3
   pay_with_paymob: ^1.4.0
   flutter_automation: ^2.0.0
   dio: ^5.9.0

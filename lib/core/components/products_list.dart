@@ -8,7 +8,6 @@ class ProductsList extends StatelessWidget {
     super.key,
     this.shrinkWrap,
     this.physics,
-    this.query,
     this.category,
     this.isFavoriteView = false,
     this.isMyOrdersView = false,
@@ -16,7 +15,7 @@ class ProductsList extends StatelessWidget {
 
   final bool? shrinkWrap;
   final ScrollPhysics? physics;
-  final String? query;
+
   final String? category;
   final bool isFavoriteView;
   final bool isMyOrdersView;

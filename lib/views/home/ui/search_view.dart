@@ -11,11 +11,11 @@ class SearchView extends StatelessWidget {
     return Scaffold(
       appBar: buildCustomAppBar(context, "Search Results"),
       body: ListView(
-        children:  [
+        children: [
           const SizedBox(
             height: 15,
           ),
-          ProductsList(query: query,),
+          ProductsList(),
         ],
       ),
     );
