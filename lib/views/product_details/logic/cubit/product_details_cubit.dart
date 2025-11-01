@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:our_market/core/api_services.dart';
 import 'package:our_market/views/product_details/logic/models/rate.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -10,7 +9,7 @@ part 'product_details_state.dart';
 
 class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   ProductDetailsCubit() : super(ProductDetailsInitial());
-  final ApiServices _apiServices = ApiServices();
+  // final ApiServices _apiServices = ApiServices();
   final supabase = Supabase.instance.client;
   String userId = Supabase.instance.client.auth.currentUser!.id;
 

@@ -8,38 +8,43 @@ class ProductsList extends StatelessWidget {
     super.key,
     this.shrinkWrap,
     this.physics,
-    this.category,
-    this.isFavoriteView = false,
-    this.isMyOrdersView = false,
+    this.query,
   });
 
   final bool? shrinkWrap;
   final ScrollPhysics? physics;
-
-  final String? category;
-  final bool isFavoriteView;
-  final bool isMyOrdersView;
+  final String? query;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        final cubit = context.read<HomeCubit>();
+        final cubit = context.watch<HomeCubit>();
+
+        // لو فيه query نعمل بحث
+        if (query != null && query!.isNotEmpty) {
+          cubit.search(query!);
+        }
+
+        // نحدد المنتجات اللي هنعرضها
+        final productsToShow = (query != null && query!.isNotEmpty)
+            ? cubit.searchResults
+            : cubit.products;
 
         if (state is GetDataLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is GetDataError) {
           return const Center(child: Text("Error loading products"));
-        } else if (cubit.products.isEmpty) {
+        } else if (productsToShow.isEmpty) {
           return const Center(child: Text("No products found"));
         } else {
           return ListView.builder(
             shrinkWrap: shrinkWrap ?? true,
             physics: physics ?? const NeverScrollableScrollPhysics(),
-            itemCount: cubit.products.length,
+            itemCount: productsToShow.length,
             itemBuilder: (context, index) {
               return ProductCard(
-                product: cubit.products[index],
+                product: productsToShow[index],
               );
             },
           );

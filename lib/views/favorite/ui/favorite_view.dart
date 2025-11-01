@@ -23,7 +23,7 @@ class FavoriteView extends StatelessWidget {
             height: 15,
           ),
           ProductsList(
-            isFavoriteView: true,
+          
           )
         ],
       ),

@@ -15,7 +15,9 @@ class SearchView extends StatelessWidget {
           const SizedBox(
             height: 15,
           ),
-          ProductsList(),
+          ProductsList(
+            query: query,
+          ),
         ],
       ),
     );

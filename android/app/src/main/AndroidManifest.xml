@@ -2,6 +2,7 @@
     <application
         android:label="our_market_new"
         android:name="${applicationName}"
+        <uses-permission android:name="android.permission.INTERNET" />
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

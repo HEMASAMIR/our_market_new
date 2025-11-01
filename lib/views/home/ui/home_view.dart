@@ -14,40 +14,6 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final TextEditingController _searchController = TextEditingController();
-
-  @override
-  // void initState() {
-  //   super.initState();
-  //   PaymentData.initialize(
-  //     apiKey:
-  //         paymobApiKey, // Required: Found under Dashboard -> Settings -> Account Info -> API Key
-  //     iframeId: iframeId, // Required: Found under Developers -> iframes
-  //     integrationCardId:
-  //         integrationCardId, // Required: Found under Developers -> Payment Integrations -> Online Card ID
-  //     integrationMobileWalletId:
-  //         integrationMobileWalletId, // Required: Found under Developers -> Payment Integrations -> Mobile Wallet ID
-  //     // // Optional User Data
-  //     userData: UserData(
-  //       email: widget.userDataModel.email, // Optional: Defaults to 'NA'
-  //       // phone: "User Phone", // Optional: Defaults to 'NA'
-  //       name: widget.userDataModel.name, // Optional: Defaults to 'NA'
-  //       // lastName: "User Last Name", // Optional: Defaults to 'NA'
-  //     ),
-
-  //     // // Optional Style Customizations
-  //     style: Style(
-  //       primaryColor: AppColors.kPrimaryColor, // Default: Colors.blue
-  //       appBarBackgroundColor: AppColors.kPrimaryColor, // Default: Colors.blue
-  //       buttonStyle: ElevatedButton.styleFrom(
-  //         backgroundColor: AppColors.kPrimaryColor,
-  //         foregroundColor: Colors.white,
-  //       ), // Default: ElevatedButton.styleFrom()
-  //       circleProgressColor: AppColors.kPrimaryColor, // Default: Colors.blue
-  //       unselectedColor: Colors.grey, // Default: Colors.grey
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Padding(

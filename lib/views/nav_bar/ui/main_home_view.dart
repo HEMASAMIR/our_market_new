@@ -20,10 +20,10 @@ class _MainHomeViewState extends State<MainHomeView> {
   @override
   void initState() {
     views = [
-      const HomeView(),
-      const StoreView(),
-      const FavoriteView(),
-      const ProfileView(),
+      HomeView(),
+      StoreView(),
+      FavoriteView(),
+      ProfileView(),
     ];
 
     super.initState();
@@ -35,9 +35,15 @@ class _MainHomeViewState extends State<MainHomeView> {
       create: (context) => NavBarCubit(),
       child: BlocBuilder<NavBarCubit, NavBarState>(
         builder: (context, state) {
-          NavBarCubit cubit = context.read<NavBarCubit>();
+          // NavBarCubit cubit = context.read<NavBarCubit>(); // NOT REBUILD
+          NavBarCubit cubit = context.watch<NavBarCubit>();
           return Scaffold(
-            body: SafeArea(child: views[cubit.currentIndex]),
+            body: SafeArea(
+              child: IndexedStack(
+                index: cubit.currentIndex,
+                children: views,
+              ),
+            ),
             bottomNavigationBar: Container(
               decoration: const BoxDecoration(color: AppColors.kWhiteColor),
               child: Padding(
