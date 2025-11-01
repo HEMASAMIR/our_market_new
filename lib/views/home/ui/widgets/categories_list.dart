@@ -6,7 +6,9 @@ import 'package:our_market/views/home/ui/category_view.dart';
 class CategoriesList extends StatelessWidget {
   const CategoriesList({
     super.key,
+
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +20,14 @@ class CategoriesList extends StatelessWidget {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: ()=> navigateTo(context,CategoryView(category: categories[index].text,)),
-              child: Column(
-                children: [
-                  CircleAvatar(
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    navigateTo(context,
+                        CategoryView(category: categories[index].text));
+                  },
+                  child: CircleAvatar(
                     radius: 30,
                     backgroundColor: AppColors.kPrimaryColor,
                     foregroundColor: AppColors.kWhiteColor,
@@ -31,9 +36,9 @@ class CategoriesList extends StatelessWidget {
                       size: 40,
                     ),
                   ),
-                  Text(categories[index].text),
-                ],
-              ),
+                ),
+                Text(categories[index].text),
+              ],
             ),
           );
         },

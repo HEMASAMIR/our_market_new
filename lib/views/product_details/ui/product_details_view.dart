@@ -12,7 +12,7 @@ import 'package:our_market/views/auth/logic/cubit/authentication_cubit.dart';
 import 'package:our_market/views/product_details/logic/cubit/product_details_cubit.dart';
 import 'package:our_market/views/product_details/ui/widgets/comments_list.dart';
 
-import '../../auth/ui/widgets/custom_text_field.dart';
+import 'package:our_market/views/auth/ui/widgets/custom_text_field.dart';
 
 class ProductDetailsView extends StatefulWidget {
   const ProductDetailsView({super.key, required this.product});

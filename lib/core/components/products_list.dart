@@ -9,28 +9,35 @@ class ProductsList extends StatelessWidget {
     this.shrinkWrap,
     this.physics,
     this.query,
+    this.category, // ✅ هنا ضفنا query
   });
 
   final bool? shrinkWrap;
   final ScrollPhysics? physics;
-  final String? query;
+  final String? query; // نص البحث
+  final String? category;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        final cubit = context.watch<HomeCubit>();
+        final cubit = context.watch<HomeCubit>(); // watch عشان يتحدث أوتوماتيكي
 
-        // لو فيه query نعمل بحث
+        // فلترة المنتجات حسب النص اللي المستخدم كتبه
+        List productsToShow = cubit.products;
         if (query != null && query!.isNotEmpty) {
-          cubit.search(query!);
+          productsToShow = productsToShow
+              .where((p) =>
+                  p.productName!.toLowerCase().contains(query!.toLowerCase()))
+              .toList();
         }
-
-        // نحدد المنتجات اللي هنعرضها
-        final productsToShow = (query != null && query!.isNotEmpty)
-            ? cubit.searchResults
-            : cubit.products;
-
+        // فلترة حسب category
+        if (category != null && category!.isNotEmpty) {
+          productsToShow = productsToShow
+              .where(
+                  (p) => p.category!.toLowerCase() == category!.toLowerCase())
+              .toList();
+        }
         if (state is GetDataLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is GetDataError) {

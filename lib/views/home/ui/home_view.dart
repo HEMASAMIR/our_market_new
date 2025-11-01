@@ -14,31 +14,60 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode(); // ✅ أضفناها هنا
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ لما نرجع للصفحة، نقفل الكيبورد بعد البناء مباشرة
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _searchFocusNode.unfocus();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView(
-        children: [
-          const SizedBox(height: 15),
-          CustomSearchField(
-            controller: _searchController,
-            onPressed: () {
-              if (_searchController.text.isNotEmpty) {
-                navigateTo(context, SearchView(query: _searchController.text));
-                _searchController.clear();
-              }
-            },
-          ),
-          const SizedBox(height: 35),
-          const Text("Popular Categories", style: TextStyle(fontSize: 20)),
-          const SizedBox(height: 15),
-          const CategoriesList(),
-          const SizedBox(height: 15),
-          const Text("Recently Products", style: TextStyle(fontSize: 20)),
-          const SizedBox(height: 15),
-          const ProductsList()
-        ],
+    return GestureDetector(
+      // ✅ لو ضغطت في أي مكان فاضي، يقفل الكيبورد
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          children: [
+            const SizedBox(height: 15),
+            CustomSearchField(
+              controller: _searchController,
+              focusNode: _searchFocusNode, // ✅ نمرره للتيكست فيلد
+              onPressed: () async {
+                // ✅ نقفل الكيبورد قبل ما ننتقل
+                _searchFocusNode.unfocus();
+
+                if (_searchController.text.isNotEmpty) {
+                  await navigateTo(
+                    context,
+                    SearchView(query: _searchController.text),
+                  );
+
+                  // ✅ نقفل الكيبورد بعد الرجوع مباشرة
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _searchFocusNode.unfocus();
+                  });
+
+                  _searchController.clear();
+                }
+              },
+            ),
+            const SizedBox(height: 35),
+            const Text("Popular Categories", style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 15),
+            const CategoriesList(),
+            const SizedBox(height: 15),
+            const Text("Recently Products", style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 15),
+            const ProductsList()
+          ],
+        ),
       ),
     );
   }
@@ -46,6 +75,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 }

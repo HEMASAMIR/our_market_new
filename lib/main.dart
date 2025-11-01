@@ -33,7 +33,7 @@ class OurMarket extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthenticationCubit()..getUserData(),
         ),
-        BlocProvider(create: (context) => HomeCubit()..getProducts()),
+        BlocProvider(create: (context) => HomeCubit()..getProducts()..listenToProductsChanges()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

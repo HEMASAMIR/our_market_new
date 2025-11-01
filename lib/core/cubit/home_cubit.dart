@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:our_market/core/models/product_model/favorite_product.dart';
 import 'package:our_market/core/models/product_model/product_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,9 +10,11 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeCubitInitial());
   // final ApiServices _apiServices = ApiServices();
   final String userId = Supabase.instance.client.auth.currentUser!.id;
+  final SupabaseClient client = Supabase.instance.client;
 
   List<ProductModel> products = [];
   List<ProductModel> searchResults = [];
+  List<ProductModel> categoryProducts = [];
 
   // Future<void> getProducts({String? query, String? category}) async {
   //   // products = [];
@@ -73,106 +76,78 @@ class HomeCubit extends Cubit<HomeState> {
     emit(GetDataSuccess()); // عشان يحدث الـ UI
   }
 
-  // void getProductsByCategory(String? category) {
-  //   if (category != null) {
-  //     for (var product in products) {
-  //       // "sports"
-  //       if (product.category!.trim().toLowerCase() ==
-  //           category.trim().toLowerCase()) {
-  //         categoryProducts.add(product);
-  //       }
-  //     }
-  //   }
-  // }
+  void getProductsByCategory(String? category) {
+    emit(GetDataLoading()); // 🌀 نبلغ الواجهة إن فيه تحميل شغال
 
-  // Map<String, bool> favoriteProducts = {};
-  // "product_id" : true
-  // add To Favorite
-  // Future<void> addToFavorite(String productId) async {
-  //   emit(AddToFavoriteLoading());
-  //   try {
-  //     await _apiServices.postData("favorite_products", {
-  //       "is_favorite": true,
-  //       "for_user": userId,
-  //       "for_product": productId,
-  //     });
+    try {
+      categoryProducts.clear();
 
-  //     await getProducts();
-  //     favoriteProducts.addAll({
-  //       productId: true,
-  //     });
+      if (category != null && category.isNotEmpty) {
+        for (var product in products) {
+          if (product.category != null &&
+              product.category!.trim().toLowerCase() ==
+                  category.trim().toLowerCase()) {
+            categoryProducts.add(product);
+          }
+        }
+      }
 
-  //     emit(AddToFavoriteSuccess());
-  //   } catch (e) {
-  //     log(e.toString());
-  //     emit(AddToFavoriteError());
-  //   }
-  // }
+      emit(GetDataSuccess()); // ✅ نبلغ الواجهة إن البيانات اتحملت
+    } catch (e) {
+      emit(GetDataError()); // ❌ لو حصل خطأ
+    }
+  }
 
-  // bool checkIsFavorite(String productId) {
-  //   return favoriteProducts.containsKey(productId);
-  // }
-  // // remove from favorite
+  /// ⚡️ الريال تايم - يسمع التغييرات في Supabase
+  void listenToProductsChanges() {
+    client
+        .channel('public:product_table')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'product_table',
+          callback: (payload) async {
+            print('📡 Real‑time update detected!');
+            await getProducts(); // أو أي عملية تحديث مناسبة
+          },
+        )
+        .subscribe();
+  }
 
-//   Future<void> removeFavorite(String productId) async {
-//     emit(RemoveFromFavoriteLoading());
-//     try {
-//       await _apiServices.deleteData(
-//           "favorite_products?for_user=eq.$userId&for_product=eq.$productId");
-//       await getProducts();
-//       favoriteProducts.removeWhere((key, value) => key == productId);
-//       emit(RemoveFromFavoriteSuccess());
-//     } catch (e) {
-//       log(e.toString());
-//       emit(RemoveFromFavoriteError());
-//     }
-//   }
+// TOOGLE FAVOURITE BY PRODUCTS
+  void toggleFavorite(String productId, String userId) {
+    print(
+        '🔹 toggleFavorite called with productId: $productId, userId: $userId');
+/**هنا بندور على المنتج في قائمة المنتجات (products).
+indexWhere بيرجع مؤشر المنتج في القائمة لو موجود، أو -1 لو مش موجود.
+اللوج ده بيوريك هل المنتج موجود ولا لأ، والمكان اللي اتلقى فيه. */
+    final index = products.indexWhere((p) => p.productId == productId);
+    print('🔹 index found: $index');
 
-//   // get favorite products
-//   List<ProductModel> favoriteProductList = [];
-//   void getFavoriteProducts() {
-//     for (ProductModel product in products) {
-//       if (product.favoriteProducts != null &&
-//           product.favoriteProducts!.isNotEmpty) {
-//         for (FavoriteProduct favoriteProduct in product.favoriteProducts!) {
-//           if (favoriteProduct.forUser == userId) {
-//             favoriteProductList.add(product);
-//             favoriteProducts.addAll({product.productId!: true});
-//           }
-//         }
-//       }
-//     }
-//   }
+    if (index != -1) {
+      /*بنجيب المنتج اللي لقيناه.
 
-//   Future<void> buyProduct({required String productId}) async {
-//     emit(BuyProductLoading());
-//     try {
-//       await _apiServices.postData("purchase_table", {
-//         "for_user": userId,
-//         "is_bought": true,
-//         "for_product": productId,
-//       });
-//       emit(BuyProductDone());
-//     } catch (e) {
-//       log(e.toString());
-//       emit(BuyProductError());
-//     }
-//   }
+اللوج ده بيأكدلك اسم المنتج اللي انت شغال عليه. */
+      final product = products[index];
+      print('🔹 Product found: ${product.productName}');
 
-//   // get favorite products
-//   List<ProductModel> userOrders = [];
-//   void getUserOrdersProducts() {
-//     for (ProductModel product in products) {
-//       if (product.purchaseTable != null && product.purchaseTable!.isNotEmpty) {
-//         for (PurchaseTable userOrder in product.purchaseTable!) {
-//           if (userOrder.forUser == userId) {
-//             userOrders.add(product);
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-/**  List<ProductModel> searchResults = [];
-  List<ProductModel> categoryProducts = []; */
+      final existingIndex =
+          product.favoriteProducts?.indexWhere((fav) => fav.id == userId);
+      print('🔹 existingIndex in favorites: $existingIndex');
+
+      if (existingIndex != null && existingIndex != -1) {
+        product.favoriteProducts?.removeAt(existingIndex);
+        print('🔹 Removed from favorites');
+      } else {
+        product.favoriteProducts ??= [];
+        product.favoriteProducts?.add(FavoriteProduct(id: userId));
+        print('🔹 Added to favorites');
+      }
+
+      emit(AddToFavoriteSuccess());
+      print('🔹 emit AddToFavoriteSuccess called');
+    } else {
+      print('🔹 Product not found!');
+    }
+  }
 }

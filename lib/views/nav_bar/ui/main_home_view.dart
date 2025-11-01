@@ -20,10 +20,10 @@ class _MainHomeViewState extends State<MainHomeView> {
   @override
   void initState() {
     views = [
-      HomeView(),
-      StoreView(),
-      FavoriteView(),
-      ProfileView(),
+      const HomeView(),
+      const StoreView(),
+      const FavoriteView(),
+      const ProfileView(),
     ];
 
     super.initState();

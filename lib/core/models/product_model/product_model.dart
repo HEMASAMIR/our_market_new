@@ -1,5 +1,5 @@
-import 'favorite_product.dart';
-import 'purchase_table.dart';
+import 'package:our_market/core/models/product_model/favorite_product.dart';
+import 'package:our_market/core/models/product_model/purchase_table.dart';
 
 class ProductModel {
   String? productId;

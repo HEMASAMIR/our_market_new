@@ -16,6 +16,7 @@ class CategoryView extends StatelessWidget {
             height: 15,
           ),
           ProductsList(
+            category: category,
           ),
         ],
       ),

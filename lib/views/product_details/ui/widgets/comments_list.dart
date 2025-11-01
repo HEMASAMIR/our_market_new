@@ -44,7 +44,7 @@ class CommentsList extends StatelessWidget {
 }
 
 class UserComment extends StatelessWidget {
-  UserComment({
+  const UserComment({
     super.key,
     required this.commentData,
   });
@@ -77,7 +77,7 @@ class UserComment extends StatelessWidget {
                     children: [
                       Text(
                         commentData?["replay"] ?? "Replay:-",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

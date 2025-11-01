@@ -4,14 +4,18 @@ import 'package:our_market/core/app_colors.dart';
 class CustomSearchField extends StatelessWidget {
   const CustomSearchField({
     super.key,
-    this.onPressed,  this.controller,
+    this.focusNode,
+    this.onPressed,
+    this.controller,
   });
 
   final void Function()? onPressed;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: focusNode,
       controller: controller,
       decoration: InputDecoration(
         labelText: "Search in Market",

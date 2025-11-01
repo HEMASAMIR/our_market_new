@@ -33,7 +33,7 @@ class _LoginViewState extends State<LoginView> {
         if (state is LoginSuccess || state is GoogleSignInSuccess) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MainHomeView()),
+            MaterialPageRoute(builder: (context) => const MainHomeView()),
           );
         }
 

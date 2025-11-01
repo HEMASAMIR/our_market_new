@@ -5,7 +5,7 @@ import 'package:our_market/core/functions/navigate_to.dart';
 import 'package:our_market/core/models/product_model/product_model.dart';
 import 'package:our_market/views/product_details/ui/product_details_view.dart';
 
-import '../../views/auth/ui/widgets/custom_elevated_btn.dart';
+import 'package:our_market/views/auth/ui/widgets/custom_elevated_btn.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
