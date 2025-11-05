@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:our_market/views/product_details/logic/models/rate.dart';
+import 'package:our_market/views/product_details/logic/models/rate_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'product_details_state.dart';
@@ -13,7 +13,152 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   final supabase = Supabase.instance.client;
   String userId = Supabase.instance.client.auth.currentUser!.id;
 
-  List<Rate> rates = []; // rate.forUser == user id
+  //RATING USING CUBIT
+
+  List<Rate> rates = [];
+  int averageRate = 0;
+  int userRate = 5;
+  void getRate({required String productId}) async {
+    emit(GetRateLoading());
+    try {
+      final response = await supabase
+          .from('rates_table')
+          .select()
+          .eq('for_product', productId);
+      rates = response.map((e) => Rate.fromJson(e)).toList();
+      // log('response: $response');
+      // log('rate length: ${rates.length}');
+      _getAverageRate();
+      // log('averageRate: ${averageRate.toString()}');
+      List<Rate> userRates =
+          rates.where((rate) => rate.forUser == userId).toList();
+      if (userRates.isNotEmpty) {
+        userRate = userRates[0].rates ??
+            0; // اليوزر بيبقا له اصلا انه يعمل 4 rate واحده فقط بس
+      }
+      log('user rates length: ${userRates.length}');
+      log('rate for user: ${userRates[0].forUser}'); // userId===========  rateForUser
+      log('user id: $userId');
+      log('userRate: ${userRate.toString()}');
+      emit(GetRateSuccess());
+    } catch (e) {
+      log('❌ Error getting rate: $e.toString()');
+      emit(GetRateError());
+    }
+  }
+
+  void _getAverageRate() {
+    averageRate = 0;
+    for (var userRate in rates) {
+      if (userRate.rates != null) {
+        averageRate += userRate.rates!;
+      }
+    }
+    averageRate = averageRate ~/ rates.length;
+  }
+
+  // check if user add rate or not
+  bool _isUserRateExist({required String productId}) {
+    for (var rate in rates) {
+      if (rate.forUser == userId && rate.forProduct == productId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<void> addOrUpdateRate({
+    required String productId,
+    required Map<String, dynamic> data,
+  }) async {
+    emit(AddOrUpdateRateLoading());
+    try {
+      // ✅ تحقق من وجود تقييم سابق للمستخدم في Supabase
+
+      if (_isUserRateExist(productId: productId)) {
+        // ✅ تحديث التقييم الموجود
+        await Supabase.instance.client
+            .from('rates_table')
+            .update(data)
+            .eq('for_user', userId)
+            .eq('for_product', productId);
+
+        log('✅ Successfully updated existing rate.');
+      } else {
+        // ✅ إضافة تقييم جديد (insert ماينفعش بعدها eq)
+        await Supabase.instance.client.from('rates_table').insert(data);
+
+        log('✅ Successfully added new rate.');
+      }
+
+      // ✅ تحديث البيانات فورًا بعد الإضافة أو التعديل
+      log('🔄 Calling getRate() to refresh data...');
+      getRate(productId: productId);
+      log('✅ getRate() completed.');
+
+      emit(AddOrUpdateRateSuccess());
+    } catch (e) {
+      log('❌ Error in addOrUpdateRate: $e');
+      emit(AddOrUpdateRateError());
+    }
+  }
+
+//COMMENT (SEND DATA TO DB);
+  Future<void> addComment({required Map<String, dynamic> data}) async {
+    emit(AddCommentLoading());
+    try {
+      log("🟢 comment data before insert: $data");
+      final res = await Supabase.instance.client
+          .from('comments_table')
+          .insert(data)
+          .select(); // بتجيي اخر اضافه;
+      log("✅ Comment added successfully: $res");
+      emit(AddCommentSuccess());
+    } catch (e, st) {
+      log("❌ Error adding comment: $e");
+      log("🧱 StackTrace: $st");
+      emit(AddCommentError());
+    }
+  }
+}
+
+// Future<void> addOrUpdateRate({
+//     required String productId,
+//     required Map<String, dynamic> data,
+//   }) async {
+//     emit(AddOrUpdateRateLoading());
+//     try {
+//       // ✅ نتحقق هل المستخدم قيم المنتج بالفعل ولا لأ
+//       if (_isUserRateExist(productId: productId)) {
+//         await Supabase.instance.client
+//             .from('rates_table')
+//             .update(data)
+//             .eq('for_user', userId)
+//             .eq('for_product', productId);
+
+//         log('✅ Successfully updated existing rate.');
+//       }
+//       // ✅ تحديث التقييم الموجود
+//       else {
+//         // ✅ إضافة تقييم جديد (ملهاش eq هنا)
+//         await Supabase.instance.client.from('rates_table').insert(data);
+
+//         log('✅ Successfully added new rate.');
+//       }
+//       // ✅ استدعاء getRate لتحديث الصفحة فورًا
+//       log('🔄 Calling getRate() to refresh data...');
+//       await getRate(productId: productId);
+//       log('✅ getRate() completed.');
+
+//       emit(AddOrUpdateRateSuccess());
+//     } catch (e) {
+//       log('❌ Error in addOrUpdateRate: $e');
+//       emit(AddOrUpdateRateError());
+//     }
+//   }
+
+/**
+ * List<Rate> rates = []; // rate.forUser == user id
   //rate ==> int
   // for_user ==> String (user id)
   int averageRate = 0;
@@ -75,58 +220,6 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     }
   }
 
-// ✅ Check if user's rate exists for product
-  // Future<bool> _isUserRateExist({required String productId}) async {
-  //   try {
-  //     final response = await supabase
-  //         .from('rates_table')
-  //         .select('id')
-  //         .eq('for_user', userId)
-  //         .eq('for_product', productId)
-  //         .maybeSingle(); // بيرجع صف واحد أو null
-  //     return response != null;
-  //   } catch (e) {
-  //     log('Error checking rate: $e');
-  //     return false;
-  //   }
-  // }
-
-  // ✅ Add or update user's rate
-  // Future<void> addOrUpdateUserRate({
-  //   required String productId,
-  //   required Map<String, dynamic> data,
-  // }) async {
-  //   emit(AddOrUpdateRateLoading());
-  //   try {
-  //     final exists = await _isUserRateExist(productId: productId);
-
-  //     if (exists) {
-  //       // لو فيه تقييم موجود → نحدثه
-  //       await supabase
-  //           .from('rates_table')
-  //           .update(data)
-  //           .eq('for_user', userId)
-  //           .eq('for_product', productId);
-
-  //       log('✅ Rate updated successfully');
-  //     } else {
-  //       // لو مفيش تقييم → نضيفه
-  //       await supabase.from('rates_table').insert({
-  //         ...data,
-  //         'for_user': userId,
-  //         'for_product': productId,
-  //       });
-
-  //       log('✅ Rate added successfully');
-  //     }
-
-  //     emit(AddOrUpdateRateSuccess());
-  //   } catch (e, st) {
-  //     log('❌ Error in addOrUpdateUserRate: $e');
-  //     log(st.toString());
-  //     emit(AddOrUpdateRateError());
-  //   }
-  // }
   Future<void> addOrUpdateUserRate({
     required String productId,
     required Map<String, dynamic> data,
@@ -172,37 +265,4 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
       log('❌ ERROR in addOrUpdateUserRate: $e');
       log('🧱 STACK TRACE:\n$e');
       emit(AddOrUpdateRateError());
-    }
-  }
-
-//COMMENT (SEND DATA TO DB);
-  Future<void> addComment({required Map<String, dynamic> data}) async {
-    emit(AddCommentLoading());
-    try {
-      log("🟢 comment data before insert: $data");
-      final res =
-          await Supabase.instance.client.from('comments_table').insert(data);
-      log("✅ Comment added successfully: $res");
-      emit(AddCommentSuccess());
-    } catch (e, st) {
-      log("❌ Error adding comment: $e");
-      log("🧱 StackTrace: $st");
-      emit(AddCommentError());
-    }
-  }
-}
-/**
- * void getReates(required String productId){
- * Response res = Supabase.instance.client.from('rates_table').select().eq('for_product', productId);
- * rates=  res.map((e) => Rate.fromJson(e)).toList();
- * //avg
- * for(userRate in rates){
- *   if(userRate.rate != null){
- *     averageRate += userRate.rate!;
- *   }
- * }
- * if(rates.isNotEmpty){
- *   averageRate = averageRate ~/ rates.length;
- * }
- * }
- */
+    }*/

@@ -6,7 +6,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:our_market/core/components/cache_image.dart';
 import 'package:our_market/core/components/custom_circle_pro_ind.dart';
 import 'package:our_market/core/functions/build_appbar.dart';
-import 'package:our_market/core/functions/navigate_without_back.dart';
 import 'package:our_market/core/models/product_model/product_model.dart';
 import 'package:our_market/views/auth/logic/cubit/authentication_cubit.dart';
 import 'package:our_market/views/product_details/logic/cubit/product_details_cubit.dart';
@@ -28,13 +27,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          ProductDetailsCubit()..getRates(productId: widget.product.productId!),
+          ProductDetailsCubit()..getRate(productId: widget.product.productId!),
       child: BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
         listener: (context, state) async {
           // FOR UPDATE DATE IN SAME PAGE
-          if (state is AddOrUpdateRateSuccess) {
-            navigateWithoutBack(context, widget);
-          }
+          // if (state is AddOrUpdateRateSuccess) {
+          //   navigateWithoutBack(context, widget);
+          // }
         },
         builder: (context, state) {
           ProductDetailsCubit cubit = context.read<ProductDetailsCubit>();
@@ -72,7 +71,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               children: [
                                 Row(
                                   children: [
-                                    Text("${cubit.averageRate} "),
+                                    Text('${cubit.averageRate}'),
                                     const Icon(Icons.star, color: Colors.amber),
                                   ],
                                 ),
@@ -88,7 +87,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               height: 20,
                             ),
                             RatingBar.builder(
-                              initialRating: cubit.userRate.toDouble(),
+                              initialRating: cubit.averageRate.toDouble(),
                               minRating: 1,
                               direction: Axis.horizontal,
                               allowHalfRating: false,
@@ -100,15 +99,15 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 color: Colors.amber,
                               ),
                               onRatingUpdate: (rating) {
-                                cubit.addOrUpdateUserRate(
-                                  productId: widget.product.productId!,
-                                  data: {
-                                    "rate": rating.toInt(),
-                                    "for_user": cubit.userId, // exist in cubit
-                                    "for_product": widget
-                                        .product.productId // product in Model
-                                  },
-                                );
+                                cubit.addOrUpdateRate(
+                                    productId: widget.product.productId!,
+                                    data: {
+                                      "rates": rating.toInt(),
+                                      "for_user":
+                                          cubit.userId, // exist in cubit
+                                      "for_product": widget
+                                          .product.productId // product in Model
+                                    });
                               },
                             ),
                             const SizedBox(
@@ -119,42 +118,19 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               labelText: "Type your feedback",
                               suffIcon: IconButton(
                                 onPressed: () async {
-                                  final authCubit =
-                                      context.read<AuthenticationCubit>();
-                                  final commentCubit =
-                                      context.read<ProductDetailsCubit>();
-
-                                  // 🟢 اطبع قبل التحميل عشان نتابع
-                                  log("🕓 Fetching user data...");
-
-                                  await authCubit.getUserData();
-                                  // استنى فعلاً لحد ما البيانات تيجي
-
-                                  // 🟢 اتأكد ان فيه بيانات
-                                  if (authCubit.userDataModel == null) {
-                                    log("❌ userDataModel is NULL after getUserData");
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text("User data not loaded")),
-                                    );
-                                    return;
-                                  }
-
-                                  log("👤 userData before comment: ${authCubit.userDataModel!.name.toString()}"); // لو عندك toJson()
-                                  // log("👤 user name before comment: ${userData?.name}");
-
-                                  await commentCubit.addComment(
-                                    data: {
-                                      "comment": _commentController.text.trim(),
-                                      "for_user":
-                                          authCubit.userDataModel!.userId,
-                                      "for_product": widget.product.productId,
-                                      "user_name":
-                                          authCubit.userDataModel!.name,
-                                    },
-                                  );
-
+                                  context
+                                      .read<AuthenticationCubit>()
+                                      .userDataModel;
+                                  cubit.addComment(data: {
+                                    "comment": _commentController.text,
+                                    "for_user": cubit.userId,
+                                    'name': context
+                                        .read<AuthenticationCubit>()
+                                        .userDataModel!
+                                        .name, // exist in cubit
+                                    "for_product": widget
+                                        .product.productId // product in Model
+                                  });
                                   _commentController.clear();
                                 },
                                 icon: const Icon(Icons.send),

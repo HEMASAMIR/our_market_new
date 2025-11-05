@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:our_market/core/components/products_list.dart';
 
 class FavoriteView extends StatelessWidget {
-  const FavoriteView({super.key});
-
+  const FavoriteView({super.key, required this.userId});
+  final String userId;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,9 +22,7 @@ class FavoriteView extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
-          ProductsList(
-          
-          )
+          ProductsList()
         ],
       ),
     );

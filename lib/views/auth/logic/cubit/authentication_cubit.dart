@@ -22,10 +22,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       await client.auth.signInWithPassword(password: password, email: email);
       // انتظر 0.5 ثانية عشان Supabase يحدّث حالة المستخدم
       await Future.delayed(const Duration(milliseconds: 500));
-      await addUserData(
-        email: email,
-        name: name,
-      );
       await getUserData();
       emit(LoginSuccess());
     } on AuthException catch (e) {
@@ -38,40 +34,40 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 
   Future<void> register({
-  required String name,
-  required String email,
-  required String password,
-}) async {
-  emit(SignUpLoading());
-  try {
-    final response = await client.auth.signUp(
-      password: password,
-      email: email,
-    );
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    emit(SignUpLoading());
+    try {
+      final response = await client.auth.signUp(
+        password: password,
+        email: email,
+      );
 
-    // ✅ انتظر فعلاً لما Supabase يحدّث المستخدم
-    final user = response.user;
-    if (user == null) {
-      await Future.delayed(const Duration(seconds: 1));
+      // ✅ انتظر فعلاً لما Supabase يحدّث المستخدم
+      final user = response.user;
+      if (user == null) {
+        await Future.delayed(const Duration(seconds: 1));
+      }
+
+      log('✅ Current user after signUp: ${client.auth.currentUser?.id}');
+
+      // ✅ دلوقتي خزّن بيانات المستخدم في الجدول
+      await addUserData(name: name, email: email);
+
+      // ✅ وبعدها حدّث الـ userDataModel في الكيوبت
+      await getUserData();
+
+      emit(SignUpSuccess());
+    } on AuthException catch (e) {
+      log(e.toString());
+      emit(SignUpError(e.message));
+    } catch (e) {
+      log(e.toString());
+      emit(SignUpError(e.toString()));
     }
-
-    log('✅ Current user after signUp: ${client.auth.currentUser?.id}');
-
-    // ✅ دلوقتي خزّن بيانات المستخدم في الجدول
-    await addUserData(name: name, email: email);
-
-    // ✅ وبعدها حدّث الـ userDataModel في الكيوبت
-    await getUserData();
-
-    emit(SignUpSuccess());
-  } on AuthException catch (e) {
-    log(e.toString());
-    emit(SignUpError(e.message));
-  } catch (e) {
-    log(e.toString());
-    emit(SignUpError(e.toString()));
   }
-}
 
   GoogleSignInAccount? googleUser;
   Future<AuthResponse> googleSignIn() async {
@@ -134,25 +130,25 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   // upsert => add or update
 
   Future<void> addUserData({
-  required String name,
-  required String email,
-}) async {
-  final user = client.auth.currentUser;
-  if (user == null) {
-    log("❌ No current user found while adding user data");
-    return;
+    required String name,
+    required String email,
+  }) async {
+    final user = client.auth.currentUser;
+    if (user == null) {
+      log("❌ No current user found while adding user data");
+      return;
+    }
+
+    final safeName = name.trim().isEmpty ? 'Unknown User' : name.trim();
+
+    await client.from('users').upsert({
+      'user_id': user.id,
+      'email': email,
+      'name': safeName,
+    });
+
+    log("✅ User data inserted successfully -> name: $safeName");
   }
-
-  final safeName = name.trim().isEmpty ? 'Unknown User' : name.trim();
-
-  await client.from('users').upsert({
-    'user_id': user.id,
-    'email': email,
-    'name': safeName,
-  });
-
-  log("✅ User data inserted successfully -> name: $safeName");
-}
 
   UserDataModel? userDataModel;
   Future<void> getUserData() async {

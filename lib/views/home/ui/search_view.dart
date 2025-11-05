@@ -23,7 +23,7 @@ class SearchView extends StatelessWidget {
       body: ListView(
         children: [
           const SizedBox(height: 15),
-          ProductsList(query: query),
+          ProductsList(),
         ],
       ),
     );

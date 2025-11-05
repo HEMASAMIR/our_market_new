@@ -7,7 +7,6 @@ import 'package:our_market/views/auth/ui/widgets/custom_row_with_arrow.dart';
 import 'package:our_market/views/auth/ui/widgets/custom_text_btn.dart';
 import 'package:our_market/views/auth/ui/widgets/custom_text_field.dart';
 import 'package:our_market/views/auth/logic/cubit/authentication_cubit.dart';
-import 'package:our_market/views/nav_bar/ui/main_home_view.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -21,11 +20,12 @@ class _SignupViewState extends State<SignupView> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool isPasswordHidden = true;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthenticationCubit, AuthenticationState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         // ====== Show loading when state is SignUpLoading ======
         if (state is SignUpLoading) {
           showDialog(
@@ -39,15 +39,18 @@ class _SignupViewState extends State<SignupView> {
 
         // ====== When success, close dialog and go to home ======
         if (state is SignUpSuccess || state is GoogleSignInSuccess) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainHomeView()),
-          );
+          if (Navigator.canPop(context))
+            Navigator.pop(context); // Close loading
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const MainHomeView()),
+          // );
         }
 
         // ====== When error, close dialog and show message ======
         if (state is SignUpError) {
-          Navigator.pop(context); // close loading dialog
+          if (Navigator.canPop(context))
+            Navigator.pop(context); // Close loading
           showMsg(context, state.message);
         }
       },
@@ -94,10 +97,16 @@ class _SignupViewState extends State<SignupView> {
                               controller: _passwordController,
                               labelText: "Password",
                               keyboardType: TextInputType.visiblePassword,
-                              isSecured: true,
+                              isSecured: isPasswordHidden,
                               suffIcon: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    isPasswordHidden = !isPasswordHidden;
+                                  });
+                                },
+                                icon: Icon(isPasswordHidden
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
                               ),
                             ),
                             const SizedBox(height: 20),

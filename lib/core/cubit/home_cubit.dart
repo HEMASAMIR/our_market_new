@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:our_market/core/models/product_model/favorite_product.dart';
 import 'package:our_market/core/models/product_model/product_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -45,7 +46,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(GetDataLoading());
     try {
       final response =
-          await Supabase.instance.client.from('product_table').select();
+          await Supabase.instance.client.from('products_table').select();
       products = response.map((e) => ProductModel.fromJson(e)).toList();
 
       emit(GetDataSuccess());
@@ -114,40 +115,38 @@ class HomeCubit extends Cubit<HomeState> {
         .subscribe();
   }
 
-// TOOGLE FAVOURITE BY PRODUCTS
-  void toggleFavorite(String productId, String userId) {
-    print(
-        '🔹 toggleFavorite called with productId: $productId, userId: $userId');
-/**هنا بندور على المنتج في قائمة المنتجات (products).
-indexWhere بيرجع مؤشر المنتج في القائمة لو موجود، أو -1 لو مش موجود.
-اللوج ده بيوريك هل المنتج موجود ولا لأ، والمكان اللي اتلقى فيه. */
-    final index = products.indexWhere((p) => p.productId == productId);
-    print('🔹 index found: $index');
+  Future<void> toggleFavorite(String productId, String userId) async {
+    emit(AddToFavoriteLoading());
+    try {
+      final response = await client
+          .from('favorites_product')
+          .select()
+          .eq('for_user', userId)
+          .eq('for_product', productId)
+          .maybeSingle();
 
-    if (index != -1) {
-      /*بنجيب المنتج اللي لقيناه.
-
-اللوج ده بيأكدلك اسم المنتج اللي انت شغال عليه. */
-      final product = products[index];
-      print('🔹 Product found: ${product.productName}');
-
-      final existingIndex =
-          product.favoriteProducts?.indexWhere((fav) => fav.id == userId);
-      print('🔹 existingIndex in favorites: $existingIndex');
-
-      if (existingIndex != null && existingIndex != -1) {
-        product.favoriteProducts?.removeAt(existingIndex);
-        print('🔹 Removed from favorites');
+      if (response != null) {
+        // حذف
+        await client
+            .from('favorites_product')
+            .delete()
+            .eq('for_user', userId)
+            .eq('for_product', productId);
+        log("🗑 Product removed from favorites: $productId");
       } else {
-        product.favoriteProducts ??= [];
-        product.favoriteProducts?.add(FavoriteProduct(id: userId));
-        print('🔹 Added to favorites');
+        // إضافة
+        await client.from('favorites_product').insert({
+          'is_favourite': true,
+          'for_user': userId,
+          'for_product': productId,
+        });
+        log("❤️ Product added to favorites: $productId");
       }
 
       emit(AddToFavoriteSuccess());
-      print('🔹 emit AddToFavoriteSuccess called');
-    } else {
-      print('🔹 Product not found!');
+    } catch (e) {
+      log("❌ Error toggling favorite: $e");
+      emit(AddToFavoriteError());
     }
   }
 }

@@ -11,13 +11,11 @@ class CategoryView extends StatelessWidget {
     return Scaffold(
       appBar: buildCustomAppBar(context, category),
       body: ListView(
-        children:  [
+        children: [
           const SizedBox(
             height: 15,
           ),
-          ProductsList(
-            category: category,
-          ),
+          ProductsList(),
         ],
       ),
     );
