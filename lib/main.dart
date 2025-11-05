@@ -35,7 +35,7 @@ class OurMarket extends StatelessWidget {
         ),
         BlocProvider(
             create: (context) => HomeCubit()
-              ..getProducts()
+              ..getProducts(client.auth.currentUser!.id)
               ..listenToProductsChanges()),
       ],
       child: MaterialApp(

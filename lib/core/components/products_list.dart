@@ -1,104 +1,73 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:our_market/core/components/product_card.dart';
-// import 'package:our_market/core/cubit/home_cubit.dart';
-
-// class ProductsList extends StatelessWidget {
-//   const ProductsList({
-//     super.key,
-//     this.shrinkWrap,
-//     this.physics,
-//     this.query,
-//     this.category, // ✅ هنا ضفنا query
-//   });
-
-//   final bool? shrinkWrap;
-//   final ScrollPhysics? physics;
-//   final String? query; // نص البحث
-//   final String? category;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<HomeCubit, HomeState>(
-//       builder: (context, state) {
-//         final cubit = context.watch<HomeCubit>(); // watch عشان يتحدث أوتوماتيكي
-
-//         // فلترة المنتجات حسب النص اللي المستخدم كتبه
-//         List productsToShow = cubit.products;
-//         if (query != null && query!.isNotEmpty) {
-//           productsToShow = productsToShow
-//               .where((p) =>
-//                   p.productName!.toLowerCase().contains(query!.toLowerCase()))
-//               .toList();
-//         }
-//         // فلترة حسب category
-//         if (category != null && category!.isNotEmpty) {
-//           productsToShow = productsToShow
-//               .where(
-//                   (p) => p.category!.toLowerCase() == category!.toLowerCase())
-//               .toList();
-//         }
-//         if (state is GetDataLoading) {
-//           return const Center(child: CircularProgressIndicator());
-//         } else if (state is GetDataError) {
-//           return const Center(child: Text("Error loading products"));
-//         } else if (productsToShow.isEmpty) {
-//           return const Center(child: Text("No products found"));
-//         } else {
-//           return ListView.builder(
-//             shrinkWrap: shrinkWrap ?? true,
-//             physics: physics ?? const NeverScrollableScrollPhysics(),
-//             itemCount: productsToShow.length,
-//             itemBuilder: (context, index) {
-//               return ProductCard(
-//                 product: productsToShow[index],
-//                 onTap: () {
-//                   cubit.toggleFavorite(productsToShow[index], cubit.userId);
-//                 },
-//               );
-//             },
-//           );
-//         }
-//       },
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:our_market/core/components/product_card.dart';
 import 'package:our_market/core/cubit/home_cubit.dart';
+import 'package:our_market/core/models/product_model/product_model.dart';
 
 class ProductsList extends StatelessWidget {
   const ProductsList({
     super.key,
     this.shrinkWrap,
     this.physics,
+    this.query,
+    this.category,
   });
 
   final bool? shrinkWrap;
   final ScrollPhysics? physics;
+  final String? query;
+  final String? category;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
-      builder: (context, state) {
-        final cubit = context.watch<HomeCubit>().products;
+    final cubit = context.read<HomeCubit>();
+    List<ProductModel> productsToShow = cubit.products;
 
-        if (state is GetDataLoading) {
+    // تصفية حسب البحث
+    if (query != null && query!.isNotEmpty) {
+      productsToShow = productsToShow
+          .where((p) =>
+              p.productName!.toLowerCase().contains(query!.toLowerCase()))
+          .toList();
+    }
+
+    // تصفية حسب الفئة
+    if (category != null && category!.isNotEmpty) {
+      productsToShow = productsToShow
+          .where((p) => p.category!.toLowerCase() == category!.toLowerCase())
+          .toList();
+    }
+
+    // حالات التحميل والخطأ
+    return Builder(
+      builder: (_) {
+        if (cubit.state is GetDataLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is GetDataError) {
+        } else if (cubit.state is GetDataError) {
           return const Center(child: Text("Error loading products"));
-        } else if (cubit.isEmpty) {
+        } else if (cubit.state is GetDataSuccess && productsToShow.isEmpty) {
           return const Center(child: Text("No products found"));
         }
 
         return ListView.builder(
           shrinkWrap: shrinkWrap ?? true,
           physics: physics ?? const NeverScrollableScrollPhysics(),
-          itemCount: cubit.length,
+          itemCount: productsToShow.length,
           itemBuilder: (context, index) {
             return ProductCard(
-              productModel: cubit[index],
+              isFavourite:
+                  cubit.checkIsFavourite(productsToShow[index].productId!),
+              productModel: productsToShow[index],
+              onPressed: () {
+                bool isFavourite =
+                    cubit.checkIsFavourite(productsToShow[index].productId!);
+
+                if (isFavourite) {
+                  cubit.removeFavFromProduct(productsToShow[index].productId!);
+                } else {
+                  cubit.addFavToProduct(productsToShow[index].productId!);
+                }
+              },
             );
           },
         );

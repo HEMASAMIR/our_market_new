@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:our_market/core/app_colors.dart';
-import 'package:our_market/core/cubit/home_cubit.dart';
 import 'package:our_market/views/favorite/ui/favorite_view.dart';
 import 'package:our_market/views/home/ui/home_view.dart';
 import 'package:our_market/views/nav_bar/logic/cubit/nav_bar_cubit.dart';
@@ -22,11 +21,9 @@ class _MainHomeViewState extends State<MainHomeView> {
   void initState() {
     views = [
       HomeView(),
-      const StoreView(),
-      FavoriteView(
-        userId: context.read<HomeCubit>().userId,
-      ),
-      const ProfileView(),
+      StoreView(),
+      FavoriteView(),
+      ProfileView(),
     ];
 
     super.initState();

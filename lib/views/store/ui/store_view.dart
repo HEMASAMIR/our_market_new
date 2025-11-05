@@ -10,7 +10,7 @@ class StoreView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView(
-        children: const [
+        children: [
           Center(
             child: Text(
               "Welcome To Our Market",

@@ -6,11 +6,8 @@ class SearchView extends StatelessWidget {
   const SearchView({
     super.key,
     required this.query,
-    this.onReturn,
   });
-
   final String query;
-  final Function(String)? onReturn;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +20,9 @@ class SearchView extends StatelessWidget {
       body: ListView(
         children: [
           const SizedBox(height: 15),
-          ProductsList(),
+          ProductsList(
+            query: query,
+          ),
         ],
       ),
     );

@@ -11,11 +11,7 @@ class MyOrdersViwe extends StatelessWidget {
       appBar: buildCustomAppBar(context, "My Orders"),
       body: const Padding(
         padding: EdgeInsets.all(8.0),
-        child: ProductsList(
-          // isMyOrdersView: true,
-          shrinkWrap: false,
-          physics: BouncingScrollPhysics(),
-        ),
+        child: ProductsList(),
       ),
     );
   }

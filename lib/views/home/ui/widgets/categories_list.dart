@@ -6,10 +6,7 @@ import 'package:our_market/views/home/ui/category_view.dart';
 class CategoriesList extends StatelessWidget {
   const CategoriesList({
     super.key,
-
   });
-
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
