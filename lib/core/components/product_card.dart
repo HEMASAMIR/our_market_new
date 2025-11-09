@@ -76,7 +76,7 @@ class ProductCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "${productModel.productName ?? "Product Name"}",
+                            productModel.productName ?? "Product Name",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

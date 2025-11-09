@@ -39,8 +39,9 @@ class _SignupViewState extends State<SignupView> {
 
         // ====== When success, close dialog and go to home ======
         if (state is SignUpSuccess || state is GoogleSignInSuccess) {
-          if (Navigator.canPop(context))
+          if (Navigator.canPop(context)) {
             Navigator.pop(context); // Close loading
+          }
           // Navigator.pushReplacement(
           //   context,
           //   MaterialPageRoute(builder: (context) => const MainHomeView()),
@@ -49,8 +50,9 @@ class _SignupViewState extends State<SignupView> {
 
         // ====== When error, close dialog and show message ======
         if (state is SignUpError) {
-          if (Navigator.canPop(context))
+          if (Navigator.canPop(context)) {
             Navigator.pop(context); // Close loading
+          }
           showMsg(context, state.message);
         }
       },

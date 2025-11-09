@@ -76,7 +76,7 @@ class _HomeViewState extends State<HomeView> {
               const SizedBox(height: 35),
               const Text("Popular Categories", style: TextStyle(fontSize: 20)),
               const SizedBox(height: 15),
-              CategoriesList(),
+              const CategoriesList(),
               const SizedBox(height: 15),
               const Text("Recently Products", style: TextStyle(fontSize: 20)),
               const SizedBox(height: 15),

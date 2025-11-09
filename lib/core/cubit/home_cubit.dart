@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:our_market/core/models/product_model/favorite_product.dart';
 import 'package:our_market/core/models/product_model/product_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -17,37 +18,16 @@ class HomeCubit extends Cubit<HomeState> {
   List<ProductModel> searchResults = [];
   List<ProductModel> categoryProducts = [];
 
-  // Future<void> getProducts({String? query, String? category}) async {
-  //   // products = [];
-  //   // searchResults = [];
-  //   // categoryProducts = [];
-  //   // favoriteProductList = [];
-  //   // userOrders = [];
-  //   emit(GetDataLoading());
-  //   try {
-  //     Response response = await _apiServices.getData(
-  //         "product_table?select=*,favorites_product(*),purchase_table(*)");
-  //     log(response.data.toString());
-
-  //     for (var product in response.data) {
-  //       products.add(ProductModel.fromJson(product));
-  //     }
-  //     // getFavoriteProducts();
-  //     // search(query);
-  //     // getProductsByCategory(category);
-  //     // getUserOrdersProducts();
-  //     emit(GetDataSuccess());
-  //   } catch (e) {
-  //     log(e.toString());
-  //     emit(GetDataError());
-  //   }
-  // }
   Future<void> getProducts(String userId) async {
+    products = [];
+    searchResults = [];
+    categoryProducts = [];
     emit(GetDataLoading());
     try {
       final response =
           await Supabase.instance.client.from('products_table').select();
       products = response.map((e) => ProductModel.fromJson(e)).toList();
+      await getFavouritesProduct();
       emit(GetDataSuccess());
     } catch (e) {
       emit(GetDataError());
@@ -91,11 +71,11 @@ class HomeCubit extends Cubit<HomeState> {
   /// ⚡️ الريال تايم - يسمع التغييرات في Supabase
   void listenToProductsChanges() {
     client
-        .channel('public:product_table')
+        .channel('public:products_table')
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
           schema: 'public',
-          table: 'product_table',
+          table: 'products_table',
           callback: (payload) async {
             print('📡 Real‑time update detected!');
             await getProducts(
@@ -111,17 +91,17 @@ class HomeCubit extends Cubit<HomeState> {
 
   // إضافة إلى المفضلة
   void addFavToProduct(String productId) async {
-    emit(AddToFavoriteLoading());
+    favouritesProductes[productId] = true; // تحديث فورى للواجهة
+    emit(AddToFavoriteSuccess()); // حدث الواجهة على طول
+
     try {
       await Supabase.instance.client.from('favourites_table').insert({
         "is_favourite": true,
         "for_user": userId,
         "for_product": productId,
       });
-
-      favouritesProductes[productId] = true; // تحديث محلي
-      emit(AddToFavoriteSuccess());
     } catch (e) {
+      favouritesProductes.remove(productId); // رجعها لو حصل خطأ
       log('❌ Error adding to favorite: $e');
       emit(AddToFavoriteError());
     }
@@ -129,17 +109,17 @@ class HomeCubit extends Cubit<HomeState> {
 
   // إزالة من المفضلة
   void removeFavFromProduct(String productId) async {
-    emit(RemoveFromFavoriteLoading());
+    favouritesProductes.remove(productId); // تحديث فورى للواجهة
+    emit(RemoveFromFavoriteSuccess());
+
     try {
       await Supabase.instance.client
           .from('favourites_table')
           .delete()
           .eq('for_product', productId)
           .eq('for_user', userId ?? '');
-
-      favouritesProductes.remove(productId); // تحديث محلي
-      emit(RemoveFromFavoriteSuccess());
     } catch (e) {
+      favouritesProductes[productId] = true; // رجعها لو حصل خطأ
       log('❌ Error removing from favorite: $e');
       emit(RemoveFromFavoriteError());
     }
@@ -149,6 +129,37 @@ class HomeCubit extends Cubit<HomeState> {
   bool checkIsFavourite(String productId) {
     return favouritesProductes.containsKey(productId);
   }
+
+  Future<void> getFavouritesProduct() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('favourites_table')
+          .select('for_product')
+          .eq('for_user', userId ?? '');
+
+      favouritesProductes.clear();
+
+      for (final fav in response) {
+        favouritesProductes[fav['for_product']] = true;
+      }
+    } catch (e) {
+      log('❌ Error fetching favourites: $e');
+    }
+  }
+
+  List<FavoriteProduct> favouriteProductList = [];
+  // void getFavouritesProduct() {
+  //   for (ProductModel product in products) {
+  //     if (product.favoriteProducts != null &&
+  //         product.favoriteProducts!.isNotEmpty) {
+  //       for (FavoriteProduct favoriteProduct in product.favoriteProducts!) {
+  //         if (favoriteProduct.forUser == userId) {
+  //           favouritesProductes[product.productId!] = true;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
 /*
  * ist<String> favoriteIds = []; // product id Text

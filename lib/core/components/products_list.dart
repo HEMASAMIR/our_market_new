@@ -11,12 +11,14 @@ class ProductsList extends StatelessWidget {
     this.physics,
     this.query,
     this.category,
+    this.isFavourite = false,
   });
 
   final bool? shrinkWrap;
   final ScrollPhysics? physics;
   final String? query;
   final String? category;
+  final bool isFavourite;
 
   @override
   Widget build(BuildContext context) {

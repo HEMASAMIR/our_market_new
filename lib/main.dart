@@ -45,7 +45,9 @@ class OurMarket extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.kScaffoldColor,
           useMaterial3: true,
         ),
-        home: client.auth.currentUser == null ? LoginView() : MainHomeView(),
+        home: client.auth.currentUser == null
+            ? const LoginView()
+            : const MainHomeView(),
       ),
     );
   }

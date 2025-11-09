@@ -66,13 +66,13 @@ class UserComment extends StatelessWidget {
           ],
         ),
         commentData?["replay"] != null
-            ? Column(
+            ? const Column(
                 children: [
                   Row(
                     children: [
                       Text(
                         "Replay:-",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
