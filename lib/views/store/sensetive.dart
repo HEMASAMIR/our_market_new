@@ -1,0 +1,6 @@
+const String apiKey =
+    'ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRFd016VTVOQ3dpYm1GdFpTSTZJbWx1YVhScFlXd2lmUS5WNDdtWkUxOVpJM1FWeDRlTXFvU3dYQWUzc3ItTUtQOV9wRHpjMS1ISkpqcGQycEtrWm9nWmVLUFdBQ2k3bGtQcXZIS2NjdXluYWNrdU9pREZFeUxkdw==';
+
+const String iframeId = '976961';
+const String integrationId = '5389274';
+const String integrationMobileWalletId = '5395163';

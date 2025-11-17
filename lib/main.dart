@@ -1,0 +1,57 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:our_market_new_fixed/core/app_colors.dart';
+import 'package:our_market_new_fixed/core/constant/const.dart';
+import 'package:our_market_new_fixed/core/cubit/home_cubit.dart';
+import 'package:our_market_new_fixed/core/my_observer.dart';
+import 'package:our_market_new_fixed/views/auth/logic/cubit/authentication_cubit.dart';
+import 'package:our_market_new_fixed/views/auth/ui/login_view.dart';
+import 'package:our_market_new_fixed/views/nav_bar/ui/main_home_view.dart';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: SupabaseKeys.supabaseUrl,
+    anonKey: SupabaseKeys.anonKey,
+  );
+  Bloc.observer = MyObserver();
+
+  runApp(const OurMarket());
+}
+
+class OurMarket extends StatelessWidget {
+  const OurMarket({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    SupabaseClient client = Supabase.instance.client;
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthenticationCubit()..getUserData()),
+        BlocProvider(
+          create:
+              (context) =>
+                  HomeCubit()
+                    ..getProducts(client.auth.currentUser!.id)
+                    ..listenToProductsChanges(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Our Market',
+        theme: ThemeData(
+          scaffoldBackgroundColor: AppColors.kScaffoldColor,
+          useMaterial3: true,
+        ),
+        home:
+            client.auth.currentUser == null
+                ? const LoginView()
+                : const MainHomeView(),
+      ),
+    );
+  }
+}
