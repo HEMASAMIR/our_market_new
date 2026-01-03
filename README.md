@@ -36,6 +36,9 @@ supabase_flutter: ^2.8.0
 google_sign_in: ^6.2.1
 flutter_automation: ^2.0.0
 dio: ^5.9.0
+pay_with_paymob: ^1.4.0
+carousel_slider: ^5.1.1
+
 
 lib/
 ├── main.dart
@@ -131,8 +134,4 @@ flutter pub get
  Make sure Flutter SDK >= 3.38 and a device/emulator is connected.
 
 https://github.com/HEMASAMIR/our_market_new/blob/0fd2d0e99b6df5d2f01d0a0aa0737690aaa95bd4/1.jpeg
-pay_with_paymob: ^1.4.0
-carousel_slider: ^5.1.1
-![Image](![Home Screen](assets/screenshots/1.jpeg)
-![Login Screen](assets/screenshots/2.jpeg)
-)
+
