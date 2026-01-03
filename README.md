@@ -145,3 +145,4 @@ carousel_slider: ^5.1.1
 ![Image](https://github.com/user-attachments/assets/5c3eeb4b-1156-4c76-8dc9-94bc8459b99c)
 ![Image](https://github.com/user-attachments/assets/fb201a4f-3a00-4ad9-a6e5-a4ed096efc92)
 ![Image](https://github.com/user-attachments/assets/cdd2c255-1967-4129-9892-0e592b4aab22)
+![openai_logo](https://github.com/user-attachments/assets/1c26ac3e-6741-412e-af23-cb71f10d0143)
