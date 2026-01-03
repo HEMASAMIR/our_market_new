@@ -198,6 +198,8 @@ flutter pub get
 
 * Configure your Supabase URL & API Key in `core/constant/sensetive_constant/`
 * Configure Paymob keys in `store/sensetive.dart`
+* ![Uploading 1PNG.PNG…]()
+
 
 4. **Run the app on device or emulator:**
 
