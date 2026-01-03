@@ -175,4 +175,51 @@ carousel_slider: ^5.1.1
 * Custom icons and intuitive navigation
 * Fast and smooth transitions
 * Dark mode available
-* Optimized for per
+* Optimized for performance with Flutter best practices
+
+---
+
+## ⚡ How to Run / Install
+
+1. **Clone the repository:**
+
+```bash
+git clone <repository-url>
+cd <project-folder>
+```
+
+2. **Install dependencies:**
+
+```bash
+flutter pub get
+```
+
+3. **Set up environment variables / sensitive keys:**
+
+* Configure your Supabase URL & API Key in `core/constant/sensetive_constant/`
+* Configure Paymob keys in `store/sensetive.dart`
+
+4. **Run the app on device or emulator:**
+
+```bash
+flutter run
+```
+
+5. **Build APK / iOS:**
+
+```bash
+flutter build apk --release
+flutter build ios --release
+```
+
+6. **Login / Signup flow:**
+
+* Use email/password or Google Sign-In to authenticate.
+
+7. **Explore Features:**
+
+* Browse products, add to favorites, view details, place orders, and make payments.
+
+---
+
+This README provides a **full overview of the project, structure, features, dependencies, UI/UX highlights, and installation instructions**, making it easy for anyone to download, run, and understand the p
