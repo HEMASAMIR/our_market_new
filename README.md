@@ -1,5 +1,5 @@
 #Goal Zone🛒
-8.jpeg
+
 ---
 
 ## Description
