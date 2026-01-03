@@ -131,18 +131,8 @@ flutter pub get
  Make sure Flutter SDK >= 3.38 and a device/emulator is connected.
 
 Screenshots (Optional)
-![WhatsApp Image 2026-01-03 at 4 06 21 AM](https://github.com/user-attachments/assets/fc4045bd-0b06-4457-aba4-e873df0df747)
-![WhatsApp Image 2026-01-03 at 4 06 21 AM (1)](https://github.com/user-attachments/assets/3aca6cb8-fa59-44d1-9b5e-9975b9fe6920)
-![WhatsApp Image 2026-01-03 at 4 05 10 AM](https://github.com/user-attachments/assets/9d44d9e4-acf2-4d0f-8ced-ec8f2a09fb5f)
-![WhatsApp Image 2026-01-03 at 4 04 47 AM](https://github.com/user-attachments/assets/b7c9da08-2248-4f83-81d1-6dfc73d4ff05)
-![WhatsApp Image 2026-01-03 at 4 30 16 AM](https://github.com/user-attachments/assets/4caa1092-1dfe-40ec-a90b-5eb232316859)
-![WhatsApp Image 2026-01-03 at 4 30 00 AM](https://github.com/user-attachments/assets/c22f32c1-f170-4db3-ae5c-e2c21ca174ab)
-![WhatsApp Image 2026-01-03 at 4 29 36 AM](https://github.com/user-attachments/assets/88d21bd5-9744-4340-96d8-153cf93cd746)
-![WhatsApp Image 2026-01-03 at 4 29 00 AM](https://github.com/user-attachments/assets/6bf54c6b-976b-4e7b-9081-13a532272c8d)
-![WhatsApp Image 2026-01-03 at 4 27 47 AM](https://github.com/user-attachments/assets/5fee87b3-3414-4d9c-8400-e31260293aa7)
-![WhatsApp Image 2026-01-03 at 4 07 49 AM](https://github.com/user-attachments/assets/d1cba72d-c344-4599-b837-0c88f16593cc)
-![WhatsApp Image 2026-01-03 at 4 07 31 AM](https://github.com/user-attachments/assets/0b6f07c7-5c5f-40ad-afdc-6fbe1b41081f)
-![WhatsApp Image 2026-01-03 at 4 06 46 AM](https://github.com/user-attachments/assets/9ad7ca26-2185-4824-abaf-8f48f4d62418)
+![12](https://github.com/user-attachments/assets/9b0ddc44-823a-442c-b0aa-59dd068dae34)
+
 
 Add screenshots of your app here for better visual appeal:
 د
