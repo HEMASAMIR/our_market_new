@@ -131,12 +131,8 @@ flutter pub get
  Make sure Flutter SDK >= 3.38 and a device/emulator is connected.
 
 Screenshots (Optional)
+[
 ![12](https://github.com/user-attachments/assets/9b0ddc44-823a-442c-b0aa-59dd068dae34)
-
-
-Add screenshots of your app here for better visual appeal:
-https://github.com/HEMASAMIR/our_market_new/blob/0fd2d0e99b6df5d2f01d0a0aa0737690aaa95bd4/1.jpeg
-![4](https://github.com/user-attachments/assets/3bdb2da1-8848-4514-8639-26e76b0f8297)
-
+](https://github.com/HEMASAMIR/our_market_new/blob/0fd2d0e99b6df5d2f01d0a0aa0737690aaa95bd4/1.jpeg)
 pay_with_paymob: ^1.4.0
 carousel_slider: ^5.1.1
