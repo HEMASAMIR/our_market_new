@@ -199,8 +199,6 @@ flutter pub get
 * Configure your Supabase URL & API Key in `core/constant/sensetive_constant/`
 * Configure Paymob keys in `store/sensetive.dart`
 
-
-
 4. **Run the app on device or emulator:**
 
 ```bash
@@ -224,4 +222,48 @@ flutter build ios --release
 
 ---
 
-This README provides a **full overview of the project, structure, features, dependencies, UI/UX highlights, and installation instructions**, making it easy for anyone to download, run, and understand the p
+## 🖼️ App Screenshots
+
+### Splash Screen
+
+![Splash](https://github.com/user-attachments/assets/98d12f07-5696-44d9-9e68-aeee0ece6e24)
+
+### Home Screen
+
+![Home](https://github.com/user-attachments/assets/5a1569f8-1620-4a21-944d-47a48f2ce875)
+
+### Product Details
+
+![Product Details](https://github.com/user-attachments/assets/bfd4d8e4-41cd-4c6e-996e-53de8c738213)
+
+### Cart
+
+![Cart](https://github.com/user-attachments/assets/a492614e-94a7-45c3-9d01-ecc4717d393e)
+
+### Profile
+
+![Profile](https://github.com/user-attachments/assets/f3f4c443-0060-4fed-b339-1581ee9d8a79)
+
+### Favorites
+
+![Favorites](https://github.com/user-attachments/assets/1f65d67b-ef0c-4bfd-9d91-e947c3674724)
+
+### Checkout
+
+![Checkout](https://github.com/user-attachments/assets/6893d056-a5c3-4522-bc77-2a19923e6234)
+
+### Settings
+
+![Settings](https://github.com/user-attachments/assets/efacc9c8-32b6-416e-a797-7d43090f10fb)
+
+### Search
+
+![Search](https://github.com/user-attachments/assets/be5f44c9-e927-42af-ac9b-34f30bb40a82)
+
+### See All Products
+
+![See All](https://github.com/user-attachments/assets/f073a565-05e5-44e4-bfdc-d89303b06973)
+
+### Banners / Promotions
+
+![Banners](https://github.com/user-attachments/assets/20c7988b-86b3-471e-a391-6a2488d82964)
